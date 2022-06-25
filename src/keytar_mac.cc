@@ -220,19 +220,15 @@ Credentials getCredentialsForItem(CFDictionaryRef item) {
   CFRelease(query);
 
   if (status == errSecSuccess) {
-      CFDataRef passwordData = (CFDataRef) CFDictionaryGetValue(
-        (CFDictionaryRef) result,
+    CFDataRef passwordData = (CFDataRef) CFDictionaryGetValue(
+        (CFDictionaryRef) result, 
         CFSTR("v_Data"));
-      CFStringRef password = CFStringCreateFromExternalRepresentation(
-        NULL,
-        passwordData,
-        kCFStringEncodingUTF8);
 
-      cred = Credentials(
-        CFStringToStdString(account),
-        CFStringToStdString(password));
+    auto passwordLength = CFDataGetLength(passwordData);
+    auto password = new uint8_t[passwordLength];
+    CFDataGetBytes(passwordData, CFRangeMake(0, passwordLength), password);
 
-      CFRelease(password);
+    cred = Credentials(CFStringToStdString(account), password, passwordLength);
   }
 
   if (result != NULL) {

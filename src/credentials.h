@@ -6,7 +6,7 @@
 
 namespace keytar {
 
-typedef std::pair<std::string, std::string> Credentials;
+typedef std::tuple<std::string, uint8_t*, int32_t> Credentials;
 
 }
 

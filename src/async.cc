@@ -209,13 +209,12 @@ void FindCredentialsWorker::OnOK() {
       keytar::Credentials cred = *it;
       Napi::Object obj = Napi::Object::New(env);
 
-      Napi::String account = Napi::String::New(env,
-        cred.first.data(),
-        cred.first.length());
+      auto accountString = std::get<0>(cred);
+      auto account =
+          Napi::String::New(env, accountString.data(), accountString.length());
 
-      Napi::String password = Napi::String::New(env,
-        cred.second.data(),
-        cred.second.length());
+      auto password = Napi::Buffer<uint8_t>::Copy(env, std::get<1>(cred),
+                                                  std::get<2>(cred));
 
 #ifndef _WIN32
 #pragma GCC diagnostic ignored "-Wunused-result"
